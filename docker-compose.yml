@@ -1,0 +1,37 @@
+version : '3.8'
+
+services:
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    networks:
+      - chat-network
+
+
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    networks:
+      - chat-network
+
+
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - api
+      - web
+    networks:
+      - chat-network
+
+
+networks:
+  chat-network:
+    driver: bridge

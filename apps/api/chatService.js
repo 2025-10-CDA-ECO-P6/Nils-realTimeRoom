@@ -1,0 +1,3 @@
+// ici on définis les methodes qui servent a manipueler le store comme checkUsernameAvailable(), addUser(), getRoomMembers() ...
+
+

@@ -2,16 +2,11 @@
   "name": "real-time-room",
   "private": true,
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "pnpm -r --parallel run dev",
-    "dev:web": "pnpm --filter ./apps/web dev",
-    "dev:api": "pnpm --filter ./apps/api dev"
+    "build": "pnpm --filter web build",
+    "dev:api": "pnpm --filter api dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev": "pnpm run dev:api & pnpm run dev:web"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.28.1"
+  "packageManager": "pnpm@10.20.0"
 }

@@ -1,17 +1,30 @@
-# 1. Stage de Build
+
 FROM node:20-alpine AS builder
 WORKDIR /app
+
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+
+
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN corepack enable && pnpm install
+
+COPY apps/web/package.json ./apps/web/
+COPY apps/api/package.json ./apps/api/
+
+
+RUN pnpm install --frozen-lockfile
+
+
 COPY . .
-RUN pnpm build
 
 
+RUN pnpm --filter web build
 
 
 FROM nginx:alpine
-COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
 
+COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
 COPY apps/web/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

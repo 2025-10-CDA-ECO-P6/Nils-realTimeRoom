@@ -14,10 +14,10 @@ export const disconnectSocket = () => {
     if (socket) socket.disconnect();
 };
 
-export const joinRoom = (pseudo, age,  room) => {
+export const joinRoom = (pseudo, age,  roomChoice) => {
     if (socket) {
         socket.connect();
-        socket.emit("join_room", {pseudo, age, room});
+        socket.emit("join_room", {pseudo, age, roomChoice});
     }
 };
 

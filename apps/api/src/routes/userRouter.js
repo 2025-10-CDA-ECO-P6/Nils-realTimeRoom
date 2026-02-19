@@ -3,7 +3,7 @@ const { chatService } = require('../services/chatService.js');
 const router = express.Router();
 
 router.post('/register-user', (req, res) => {
-    const {pseudo, age, room} = req.body;
+    const {pseudo, age, roomChoice} = req.body;
     if (!pseudo || pseudo.trim().length < 3) {
         return res.status(400).json({
             error: 'pseudo doit contenir au moin 3 chars'
@@ -20,7 +20,7 @@ router.post('/register-user', (req, res) => {
     res.status(200).json({
         success: true,
         message: 'utilisateur validé ',
-        user : {pseudo, age, room}
+        user : {pseudo, age, roomChoice}
     });
 });
 

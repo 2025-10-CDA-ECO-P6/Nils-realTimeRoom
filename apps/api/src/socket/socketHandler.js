@@ -2,14 +2,14 @@ import {chatService} from "../services/chatService.js";
 
 export const setupSocketHandlers = (io) => {
     io.on('connection', (socket) => {
-        socket.on('join_room', ({pseudo, age, room}) => {
-            socket.join(room);
+        socket.on('join_room', ({pseudo, age, roomChoice}) => {
+            socket.join(roomChoice);
             socket.pseudo = pseudo;
-            socket.to(room).emit('message', {
+            socket.to(roomChoice).emit('message', {
                 user: 'System',
                 text: `${pseudo} a rejoint le salon`
             });
-            console.log(`${pseudo} est dans ${room}`);
+            console.log(`${pseudo} est dans ${roomChoice}`);
         });
         socket.on('disconnect', ()=> {
             if (socket.pseudo) {
@@ -18,6 +18,4 @@ export const setupSocketHandlers = (io) => {
             }
         })
     })
-
-
 }

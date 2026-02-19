@@ -1,19 +1,17 @@
-FROM node:20-alpine AS build
-
-RUN npm install -g pnpm
-
+# 1. Stage de Build
+FROM node:20-alpine AS builder
 WORKDIR /app
-
-COPY package.json pnpm-lock.yaml* ./
-
-RUN pnpm install --no-frozen-lockfile
-
+COPY package.json pnpm-lock.yaml ./
+RUN corepack enable && pnpm install
 COPY . .
 RUN pnpm build
 
 
+
+
 FROM nginx:alpine
-COPY --from=build /app/apps/web/dist /usr/share/nginx/html
+COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
+
 COPY apps/web/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

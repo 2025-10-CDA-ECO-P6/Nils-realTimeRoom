@@ -1,33 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import {useEffect, useState} from 'react'
 import './App.css'
+import {initiateSocket, joinRoom} from "./socketClient.js";
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [user, setUser] = useState({
+        pseudo : '',
+        age : '',
+        roomChoice : ''
+    });
 
+    useEffect(() => {
+        initiateSocket();
+    }, []);
+
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setUser({
+            ...user,
+            [name] : value,
+        });
+    };
+
+    const handleSubmit = async(e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch('/api/register-user', {
+                method: "POST",
+                headers: {'Content-Type' : 'application/json'},
+                body: JSON.stringify(user)
+            })
+            if (response.ok) {
+                joinRoom(user.pseudo, user.age, user.roomChoice);
+            }
+        } catch (e) {
+            console.error("rereur api", e.message);
+        }
+    }
   return (
     <>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+          <form  onSubmit={handleSubmit}>
+              <label htmlFor="pseudo">
+                  <input type="text" value={user.pseudo} name="pseudo" onChange={handleChange}/>
+              </label>
+              <label htmlFor="age">
+                  <input type="number" value={user.age} name="age" onChange={handleChange}/>
+              </label>
+              <label htmlFor="roomChoice">Choissisez votre room
+                  <select name="roomChoice" id="" value={user.roomChoice} onChange={handleChange}>
+                      <option  value="">Selectionnez une room</option>
+                      <option  value="hub">Hub</option>
+                      <option  value="dev">Dev</option>
+                      <option  value="gaming">Gaming</option>
+                  </select>
+              </label>
+              <button type="submit">S'inscrire</button>
+          </form>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
     </>
   )
 }

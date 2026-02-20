@@ -35,6 +35,7 @@ function LoginPage() {
             })
             if (response.ok) {
                 joinRoom(user.pseudo, user.age, user.roomChoice);
+                sessionStorage.setItem('pseudo', user.pseudo)
                 setUser({
                     pseudo: '',
                     age: '',
@@ -55,23 +56,22 @@ function LoginPage() {
     }
     return (
         <>
-            <div>
+            <div className="form-container">
 
                 <form  onSubmit={handleSubmit}>
                     <label htmlFor="pseudo">
-                        <input type="text" value={user.pseudo} name="pseudo" onChange={handleChange}/>
+                        <input type="text" value={user.pseudo} placeholder={"Pseudo"} name="pseudo" onChange={handleChange}/>
                     </label>
                     <label htmlFor="age">
-                        <input type="number" value={user.age} name="age" onChange={handleChange}/>
+                        <input type="number" placeholder={"Age"} value={user.age} name="age" onChange={handleChange}/>
                     </label>
-                    <label htmlFor="roomChoice">Choissisez votre room
+
                         <select name="roomChoice" id="" value={user.roomChoice} onChange={handleChange}>
-                            <option  value="">Selectionnez une room</option>
+                            <option disabled  value="">Selectionnez une room</option>
                             <option  value="hub">Hub</option>
                             <option  value="dev">Dev</option>
                             <option  value="gaming">Gaming</option>
                         </select>
-                    </label>
                     <button type="submit">S'inscrire</button>
                 </form>
             </div>

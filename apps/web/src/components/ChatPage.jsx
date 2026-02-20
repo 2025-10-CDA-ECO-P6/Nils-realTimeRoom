@@ -4,6 +4,7 @@ import {CodeIcon, GamepadIcon, PartyPopper, SendIcon, User} from 'lucide-react';
 import {useParams} from 'react-router-dom';
 import {offMessage, offRoomUsers, onHistory, onMessage, onRoomUsers, sendMessage} from "../services/socketClient";
 function ChatPage() {
+
     const {room} = useParams();
     const [messages, setMessages] = useState([]);
     const [connectedUsers, setConnectedUsers] = useState([]);
@@ -49,7 +50,7 @@ function ChatPage() {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') handleSend();
     };
-
+    console.log("pseudo session:", JSON.stringify(pseudo));
     return (
         <div className="chat-page-container">
             <div className="messages-container">
@@ -71,7 +72,7 @@ function ChatPage() {
                     {messages.map((msg, index) => (
                         <div key={index} className={`bubble ${msg.user === pseudo ? 'me' : msg.user === 'System' ? 'system' : 'other'}`}>
                             {msg.user !== pseudo && msg.user !== 'System' && (
-                                <span className="bubble-author">{msg.user}</span>
+                                <span className="bubble-author">{msg.user.trim().charAt(0).toUpperCase()} : </span>
                             )}
                             <span className="bubble-text">{msg.text}</span>
                         </div>

@@ -91,3 +91,35 @@
   @include mixins.flex-column;
   align-items: center;
 }
+
+.messages-content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 1rem;
+}
+
+.bubble {
+  max-width: 60%;
+  padding: 8px 12px;
+  border-radius: $radius;
+
+  &.me {
+    align-self: flex-end;
+    background-color: $bg-bubble-me;
+  }
+
+  &.other {
+    align-self: flex-start;
+    background-color: $bg-bubble-other;
+  }
+
+  &.system {
+    align-self: center;
+    font-size: 0.75rem;
+    color: $text-muted;
+    background: none;
+  }
+
+}
+

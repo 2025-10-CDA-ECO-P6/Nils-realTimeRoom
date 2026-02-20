@@ -42,4 +42,8 @@ export const offRoomUsers = () => {
     if (socket) socket.off('room_users');
 };
 
+export const leaveRoom = (room)=> {
+    if (socket) socket.emit('leave_room', room);
+}
+
 export const getSocket = () => socket;

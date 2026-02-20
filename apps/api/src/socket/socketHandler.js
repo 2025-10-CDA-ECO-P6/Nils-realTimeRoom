@@ -1,4 +1,3 @@
-
 import {chatService} from "../services/chatService.js";
 
 export const setupSocketHandlers = (io) => {
@@ -26,6 +25,12 @@ export const setupSocketHandlers = (io) => {
             };
             chatService.addMessage(socket.roomChoice, message);
             io.to(socket.roomChoice).emit('message', message);
+        });
+
+        socket.on('leave_room', (room) => {
+            socket.leave(room);
+            chatService.removeUser(socket.pseudo, room);
+            io.to(room).emit('room_users', chatService.getUsersByRoom(room));
         })
 
         socket.on('disconnect', ()=> {

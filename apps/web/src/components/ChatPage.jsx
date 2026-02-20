@@ -1,8 +1,17 @@
 import React from 'react'
 import {useEffect, useState, useRef} from "react";
 import {CodeIcon, GamepadIcon, PartyPopper, SendIcon, User} from 'lucide-react';
-import {useParams} from 'react-router-dom';
-import {offMessage, offRoomUsers, onHistory, onMessage, onRoomUsers, sendMessage} from "../services/socketClient";
+import {useNavigate, useParams} from 'react-router-dom';
+import {
+    joinRoom,
+    leaveRoom,
+    offMessage,
+    offRoomUsers,
+    onHistory,
+    onMessage,
+    onRoomUsers,
+    sendMessage
+} from "../services/socketClient";
 function ChatPage() {
 
     const {room} = useParams();
@@ -11,36 +20,36 @@ function ChatPage() {
     const [input, setInput] = useState('');
     const messagesEndRef = useRef(null);
     const pseudo = sessionStorage.getItem('pseudo');
-
+    const navigate = useNavigate();
     const availablesRooms = [
         {name: 'Fun', icon: <PartyPopper/>},
         {name: 'Gaming', icon: <GamepadIcon/>},
         {name: 'Dev', icon: <CodeIcon/>}
     ];
 
+
+
     useEffect(() => {
-        onHistory((history) => {
-            setMessages(history);
-        });
-
-        onMessage((msg) => {
-            setMessages(prev => [...prev, msg]);
-        });
-
-        onRoomUsers((users) => {
-            setConnectedUsers(users);
-        });
+        onHistory((history) => {setMessages(history);});
+        onMessage((msg) => {setMessages(prev => [...prev, msg]);});
+        onRoomUsers((users) => {setConnectedUsers(users);});
 
         return () => {
             offMessage();
             offRoomUsers();
         };
-    }, []);
+    }, [room]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
     }, [messages]);
 
+    const handleChangeRoom = (roomName) => {
+        if (roomName.toLowerCase() === room)return;
+        leaveRoom(room);
+        joinRoom(pseudo, null, roomName.toLowerCase());
+        navigate(`/chat/${roomName.toLowerCase()}`);
+    }
     const handleSend = () => {
         if (!input.trim()) return;
         sendMessage(input.trim());
@@ -60,7 +69,7 @@ function ChatPage() {
                     </div>
                     <div className="roomList-container">
                         {availablesRooms.map((r) => (
-                            <div key={r.name} className="room-item">
+                            <div key={r.name} className="room-item" onClick={()=> handleChangeRoom(r.name)}>
                                 {r.icon}
                                 <span>{r.name}</span>
                             </div>

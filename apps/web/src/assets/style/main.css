@@ -169,4 +169,8 @@ ul {
   background: none;
 }
 
+.room-item {
+  cursor: pointer;
+}
+
 /*# sourceMappingURL=main.css.map */

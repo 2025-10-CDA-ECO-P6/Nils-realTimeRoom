@@ -1,15 +1,36 @@
-const users = new Set();
+import store from "../../store.js";
 
 export const chatService = {
-    isPseudoDispo : (pseudo) => !users.has(pseudo),
-
-    addUser: (pseudo) => {
-        if (pseudo) users.add(pseudo);
+    addUser: (pseudo, room) => {
+        store.users.set(pseudo, room);
     },
 
     removeUser: (pseudo) => {
-        users.delete(pseudo)
+        store.users.delete(pseudo);
     },
 
-    getAllUsers : ()=> Array.from(users)
-}
+    getUsersByRoom: (room) => {
+        return Array.from(store.users.entries())
+            .filter(([_, r]) => r === room)
+            .map(([pseudo]) => pseudo);
+    },
+
+    addMessage: (room, message) => {
+        if (store.rooms[room]) {
+            store.rooms[room].messages.push(message);
+        }
+    },
+
+    getMessages: (room) => {
+        return store.rooms[room]?.messages ?? [];
+    },
+
+    getRooms: () => {
+        return Object.entries(store.rooms).map(([name, data]) => ({
+            name,
+            description: data.description
+        }));
+    },
+
+    isPseudoDispo: (pseudo) => !store.users.has(pseudo)
+};

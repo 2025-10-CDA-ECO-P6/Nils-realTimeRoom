@@ -1,0 +1,93 @@
+@use "../variable" as *;
+@use "../mixins";
+
+
+.chat-page-container {
+  @include mixins.flex-center;
+  gap: 8px;
+  width: 100%;
+  padding: 25px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.roomList-container {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.roomList-container div{
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.messages-container, .room-informations {
+  @include mixins.card;
+  height: 50vh;
+}
+.messages-container {
+
+  flex: 3;
+}
+.room-informations {
+  flex: 1;
+}
+
+.messages-content-container {
+  margin-top: 2rem;
+  background-color: #eaeaea;
+  height: 300px;
+  border-radius: 12px;
+
+}
+
+.messages-input-container {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 10px;
+}
+
+.messages-input-container button {
+  width: 20rem;
+  background-color:$bg-dark;
+  color: $primary-dark;
+  box-shadow: $box-shadow;
+}
+
+
+.message-input {
+  padding: 10px;
+  width: 80%;
+
+  color: $primary;
+  box-shadow: $box-shadow;
+}
+
+.room-informations {
+  @include mixins.flex-column;
+
+}
+.count {
+  @include mixins.flex-column;
+}
+
+.connected-user-list {
+  @include mixins.card;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 0.5rem;
+  height: 100%;
+  max-height: 100%;
+  overflow: auto;
+
+}
+.user-container {
+  @include mixins.flex-column;
+  align-items: center;
+}

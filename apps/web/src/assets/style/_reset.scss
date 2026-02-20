@@ -1,0 +1,18 @@
+@use "variable" as *;
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: $font-main;
+  background-color: $bg-dark;
+  color: $text-light;
+}
+
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; outline: none; }
+input, select { outline: none; border: none; }
+ul { list-style: none; }

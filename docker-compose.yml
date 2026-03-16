@@ -1,5 +1,3 @@
-version : '3.8'
-
 services:
   api:
     build:
@@ -9,7 +7,9 @@ services:
       - chat-network
 
   web:
-    build: ./apps/web
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
     ports:
       - "8080:80"
     depends_on:
@@ -20,3 +20,19 @@ services:
 networks:
   chat-network:
     driver: bridge
+
+
+#
+#  nginx:
+#    image: nginx:alpine
+#    ports:
+#      - "80:80"
+#    volumes:
+#      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+#    depends_on:
+#      - api
+#      - web
+#    networks:
+#      - chat-network
+#
+#

@@ -1,4 +1,5 @@
 import {chatService} from "../services/chatService.js";
+import store from "../../store.js";
 
 export const setupSocketHandlers = (io) => {
     io.on('connection', (socket) => {
@@ -7,7 +8,15 @@ export const setupSocketHandlers = (io) => {
             socket.pseudo = pseudo;
             socket.roomChoice = roomChoice;
             chatService.addUser(pseudo, roomChoice);
-            socket.emit('history', chatService.getMessages(roomChoice));
+            const roomKey = Object.keys(store.rooms).find(
+                k => k.toLowerCase() === roomChoice.toLowerCase()
+            );
+
+            socket.emit('room_info', {
+                name: roomChoice,
+                description: store.rooms[roomKey]?.description
+            });
+            socket.emit('history', chatService.getMessages(roomKey));
             socket.to(roomChoice).emit('message', {
                 user: 'System',
                 text: `${pseudo} a rejoint le salon`
@@ -32,6 +41,8 @@ export const setupSocketHandlers = (io) => {
             chatService.removeUser(socket.pseudo, room);
             io.to(room).emit('room_users', chatService.getUsersByRoom(room));
         })
+
+        socket.on('get_room', () => {})
 
         socket.on('disconnect', ()=> {
             if (socket.pseudo) {

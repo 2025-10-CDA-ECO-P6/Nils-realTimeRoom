@@ -1,6 +1,6 @@
 import React from 'react'
 import {useEffect, useState, useRef} from "react";
-import {CodeIcon, GamepadIcon, PartyPopper, SendIcon, User} from 'lucide-react';
+import {CodeIcon, GamepadIcon, PartyPopper, SendIcon, User, Users2} from 'lucide-react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {
     joinRoom,
@@ -8,7 +8,7 @@ import {
     offMessage,
     offRoomUsers,
     onHistory,
-    onMessage,
+    onMessage, onRoomInfo,
     onRoomUsers,
     sendMessage
 } from "../services/socketClient";
@@ -17,6 +17,7 @@ function ChatPage() {
     const {room} = useParams();
     const [messages, setMessages] = useState([]);
     const [connectedUsers, setConnectedUsers] = useState([]);
+    const [roomInfo, setRoomInfo] = useState('');
     const [input, setInput] = useState('');
     const messagesEndRef = useRef(null);
     const pseudo = sessionStorage.getItem('pseudo');
@@ -30,9 +31,15 @@ function ChatPage() {
 
 
     useEffect(() => {
+        onRoomInfo((info) => {
+            console.log("room_info reçu:", info);
+            setRoomInfo(info);
+        });
+
         onHistory((history) => {setMessages(history);});
         onMessage((msg) => {setMessages(prev => [...prev, msg]);});
         onRoomUsers((users) => {setConnectedUsers(users);});
+        joinRoom(pseudo, null, room)
 
         return () => {
             offMessage();
@@ -65,13 +72,13 @@ function ChatPage() {
             <div className="messages-container">
                 <div className="header">
                     <div className="greet-message">
-                        Bienvenue dans la room {room}
+                        {roomInfo.description}
                     </div>
                     <div className="roomList-container">
                         {availablesRooms.map((r) => (
                             <div key={r.name} className="room-item" onClick={()=> handleChangeRoom(r.name)}>
                                 {r.icon}
-                                <span>{r.name}</span>
+                                <span>{r.name.toUpperCase()}</span>
                             </div>
                         ))}
                     </div>
@@ -106,8 +113,13 @@ function ChatPage() {
 
             <div className="room-informations">
                 <div className="count">
-                    <span>Room : {room}</span>
-                    <span>Connectés : {connectedUsers.length}</span>
+                    <div className='count-left²'>
+                        <Users2/>
+                    </div>
+                    <div className='count-right'>
+                        <span>Salon : {room.toUpperCase()}</span>
+                        <span>{connectedUsers.length} en ligne</span>
+                    </div>
                 </div>
                 <div className="connected-user-list">
                     {connectedUsers.map((user, index) => (

@@ -44,6 +44,10 @@ export const offRoomUsers = () => {
 
 export const leaveRoom = (room)=> {
     if (socket) socket.emit('leave_room', room);
-}
+};
+
+export const onRoomInfo = (callback) => {
+    if (socket) socket.on('room_info', callback);
+};
 
 export const getSocket = () => socket;

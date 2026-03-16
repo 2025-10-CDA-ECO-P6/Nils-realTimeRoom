@@ -34,7 +34,6 @@ function LoginPage() {
                 body: JSON.stringify(user)
             })
             if (response.ok) {
-                joinRoom(user.pseudo, user.age, user.roomChoice);
                 sessionStorage.setItem('pseudo', user.pseudo)
                 setUser({
                     pseudo: '',

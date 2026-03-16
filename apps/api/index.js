@@ -1,12 +1,12 @@
-const express = require('express');
-const http = require('http');
-const { Server } = require("socket.io");
-const cors = require('cors');
-const userRouter = require("./src/routes/userRouter.js");
-const { setupSocketHandlers } = require("./src/socket/socketHandler");
+import express from 'express';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import userRouter from './src/routes/userRouter.js';
+import { setupSocketHandlers } from './src/socket/socketHandler.js';
+
 
 const app = express();
-const server = http.createServer(app);
+const server = createServer(app);
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());

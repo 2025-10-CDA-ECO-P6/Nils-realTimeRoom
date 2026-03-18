@@ -1,20 +1,21 @@
 import {states, winningCombinaisons} from './rules.js'
-import * as console from "node:console";
+
 
 export default class Morpion {
 
 
-    player1 = {
-        'symbol' : 'X',
-        'moves' : [],
 
-    };
-    player2 = {
-        'symbol' : 'O',
-        'moves' : [],
-    };
 
    constructor() {
+       this.player1 = {
+           'symbol' : 'X',
+           'moves' : [],
+
+       };
+       this.player2 = {
+           'symbol' : 'O',
+           'moves' : [],
+       };
        this.board = Array(9).fill('');
        this.state = states.PLAYING;
        this.currentPlayer = this.player1;
@@ -56,19 +57,25 @@ export default class Morpion {
 
 
     playMove(index) {
-       if (!this.isAlreadyFill(this.board[index]) && !this.isFinished()) {
-               let currentPlayer = this.getCurrentPlayer();
-               this.board[index] = currentPlayer.symbol;
-               this.currentPlayer.moves.push(index); // on ajoute l'index de la case joué dans le tableau du joueur correspondant
-               if (this.isWin() || this.isSpare()) {
-                   console.log(this.winner)
-                   return;
-               }
-               this.setCurrentPlayer();
-       } else {
-           this.isFinished() ? console.log('La partie est terminée') :  console.log('La case est déja prise');
+       // condtion arret immediat
+        if (this.isAlreadyFill(this.board[index]) || this.isFinished()) {
+            return;
+        }
+           let currentPlayer = this.getCurrentPlayer();
+           this.board[index] = currentPlayer.symbol;
+           this.currentPlayer.moves.push(index); // on ajoute l'index de la case joué dans le tableau du joueur correspondant
 
-       }
+
+           if (this.isWin()) {
+               this.state = states.WIN;
+               this.winner = this.currentPlayer;
+               return;
+           }
+           if (this.isSpare()) {
+               this.state = states.SPARE;
+           }
+           this.setCurrentPlayer();
+
     }
 
      isFinished() {
@@ -91,7 +98,7 @@ export default class Morpion {
      }
 
      isSpare() {
-       if (!this.board.includes('') && !states.WIN) {
+       if (!this.board.includes('') && this.state !== states.WIN) {
            return true;
        }
        return false;

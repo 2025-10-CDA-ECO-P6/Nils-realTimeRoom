@@ -6,7 +6,8 @@ export default class Morpion {
 
 
 
-   constructor() {
+   constructor(room) {
+       this.room = room
        this.player1 = {
            'symbol' : 'X',
            'moves' : [],

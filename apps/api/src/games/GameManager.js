@@ -1,5 +1,8 @@
 class GameManager {
-    playMove(index) {
+   constructor() {
+   }
 
-    }
+   launchGame() {
+
+   }
 }

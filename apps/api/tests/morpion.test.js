@@ -77,13 +77,7 @@ describe("MorpionGame", () => {
         const game = new Morpion();
         const board = game.getBoard();
         const winner = game.getWinner();
-        /*
 
-        +
-
-
-        poour detecter une égalité, il faut que tout le board soit remplis et que aucune combinaison gagnant ne soit trouvé.
-        * **/
 
     })
 

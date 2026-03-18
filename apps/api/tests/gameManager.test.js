@@ -9,4 +9,10 @@ describe("GameManager test", () => {
         expect(game).toBeInstanceOf(Morpion);
         expect(game.room).toEqual('fun');
     })
+
+    test("le gameManage doit recuperer une instance d'un jeu via son room id", () => {
+        const manager = new GameManager();
+        const createdGame = manager.launchGame('fun', 'morpion');
+        const retrievedGame = manager.getGame('fun');
+    })
 })

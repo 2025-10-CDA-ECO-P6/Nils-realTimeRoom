@@ -39,9 +39,8 @@ export default class Morpion {
    }
 
    setCurrentPlayer() {
-       console.log("Avant changement :", this.currentPlayer);
        this.currentPlayer = this.currentPlayer === this.player1 ? this.player2 : this.player1;
-       console.log("Après changement :", this.currentPlayer);
+
    }
 
    getWinner() {
@@ -57,13 +56,14 @@ export default class Morpion {
 
 
     playMove(index) {
-
        if (!this.isAlreadyFill(this.board[index]) && !this.isFinished()) {
                let currentPlayer = this.getCurrentPlayer();
                this.board[index] = currentPlayer.symbol;
                this.currentPlayer.moves.push(index); // on ajoute l'index de la case joué dans le tableau du joueur correspondant
-               this.isWin(); // on verifie qu'avec ce coup il n'y pas victoire du current Player avant de changer de tour
-               this.isSpare() // on verifie que ce coup ne provoque pas une egalité aavant de changer de tour
+               if (this.isWin() || this.isSpare()) {
+                   console.log(this.winner)
+                   return;
+               }
                this.setCurrentPlayer();
        } else {
            this.isFinished() ? console.log('La partie est terminée') :  console.log('La case est déja prise');
@@ -84,6 +84,7 @@ export default class Morpion {
        const hasWon = winningCombinaisons.some(combinaison => combinaison.every(index => this.currentPlayer.moves.includes(index)))
        if (hasWon) {
            this.state = states.WIN;
+           this.setWinner(this.currentPlayer);
            return true;
        }
        return false;

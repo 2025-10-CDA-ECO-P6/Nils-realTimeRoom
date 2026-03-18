@@ -1,17 +1,9 @@
 // DEFINE WINNING RULES
 export const winningCombinaisons = [
-    [1,2,3],
-    [4,5,6], // Horizontales
-    [7,8,9],
-
-    [3,5,7],
-    [1,5,9], // verticales
-    [2,5,8],
-
-
-    [1,4,7], // diagonales
-    [3,6,9],
-]
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Horizontales
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Verticales
+    [0, 4, 8], [2, 4, 6]              // Diagonales
+];
 
 export const PLAYER_1_ICON = "x";
 export const PLAYER_2_ICON = "o";

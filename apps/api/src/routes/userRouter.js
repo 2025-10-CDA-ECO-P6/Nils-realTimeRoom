@@ -17,7 +17,6 @@ router.post('/register-user', (req, res) => {
         });
     }
 
-    chatService.addUser(pseudo, roomChoice);
     console.log("INSCRIPTION reussie");
     res.status(200).json({
         success: true,

@@ -4,12 +4,9 @@ import BoardGame from "../BoardGame.js";
 
 export default class Morpion extends BoardGame{
 
-
-
-
-   constructor(id) {
-       super(id,3, 3, 3);
-   }
+    constructor(id, rows = 3, cols = 3, winLength = 3) {
+        super(id, rows, cols, winLength);
+    }
 
     playMove(index) {
        // condtion arret immediat

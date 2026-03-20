@@ -1,0 +1,140 @@
+@use "../variable" as *;
+@use "../mixins";
+
+.right-panel-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  gap: 46px;
+
+  .connected-user-list {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 12px 8px;
+    border-bottom: 1px solid $border;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+
+    .user-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 12px;
+      border-radius: $radius;
+      border: 1px solid $border;
+      background: $bg-input;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: border-color 0.15s, background 0.15s;
+
+      &:hover {
+        border-color: $primary;
+        background: $bg-dark;
+      }
+
+      svg {
+        color: $text-muted;
+      }
+
+      span {
+        color: $text-light;
+        font-size: 0.75rem;
+        font-weight: 500;
+        max-width: 60px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      button {
+        background: none;
+        border: 1px solid $border;
+        border-radius: $radius;
+        color: $primary;
+        padding: 3px 5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        transition: background 0.15s, border-color 0.15s;
+
+        &:hover {
+          background: $bg-input;
+          border-color: $primary;
+        }
+      }
+    }
+  }
+
+  .activity-container {
+    overflow: hidden;
+
+    .morpion-overlay {
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .morpion-card {
+        background: $bg-card;
+        border: 1px solid $border;
+        border-radius: $radius;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        width: 70%;
+
+        h3 {
+          color: $primary;
+          font-size: 1.1rem;
+          margin: 0;
+        }
+
+        .morpion-grid {
+          display: grid;
+          grid-template-columns: repeat(var(--grid-cols, 3), 1fr);
+          gap: 6px;
+          width: 50%;
+        }
+
+        .morpion-cell {
+          aspect-ratio: 1;
+          background: $bg-input;
+          border: 2px solid $border;
+          border-radius: $radius;
+          color: $text-light;
+          font-size: 1.4rem;
+          font-weight: bold;
+          cursor: pointer;
+          transition: background 0.15s, border-color 0.15s;
+
+          &:hover:not(:disabled) {
+            background: $bg-dark;
+            border-color: $primary;
+          }
+
+          &:disabled {
+            cursor: default;
+          }
+        }
+
+        .winner-msg {
+          color: $primary;
+          font-size: 1rem;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

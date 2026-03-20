@@ -1,0 +1,76 @@
+@use "../variable" as *;
+@use "../mixins";
+.gamepicker-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gamepicker-card {
+  background: $bg-card;
+  border: 1px solid $border;
+  border-radius: $radius;
+  padding: 20px;
+  min-width: 280px;
+  box-shadow: $box-shadow;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .gamepicker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: $text-light;
+    font-size: 0.95rem;
+
+    strong { color: $primary; }
+
+    .gamepicker-close {
+      background: none;
+      border: none;
+      color: $text-muted;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      &:hover { color: $text-light; }
+    }
+  }
+
+  .gamepicker-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .gamepicker-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    border: 1px solid $border;
+    border-radius: $radius;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+
+    &:hover {
+      border-color: $primary;
+      background: $bg-input;
+    }
+
+    .gamepicker-label {
+      color: $text-light;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .gamepicker-desc {
+      color: $text-muted;
+      font-size: 0.75rem;
+    }
+  }
+}

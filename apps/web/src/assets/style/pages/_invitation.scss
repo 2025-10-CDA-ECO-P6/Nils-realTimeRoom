@@ -1,0 +1,67 @@
+@use "../variable" as *;
+@use "../mixins";
+.challenge-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: $bg-card;
+  border: 1px solid $border;
+  border-radius: $radius;
+  padding: 14px 18px;
+  box-shadow: $box-shadow;
+  animation: slideIn 0.3s ease;
+
+  .challenge-icon {
+    color: $primary;
+    display: flex;
+    align-items: center;
+  }
+
+  .challenge-text {
+    color: $text-light;
+    font-size: 0.9rem;
+
+    strong {
+      color: $primary;
+    }
+  }
+
+  .challenge-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: 8px;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: $radius;
+      cursor: pointer;
+      transition: opacity 0.2s;
+
+      &:hover { opacity: 0.85; }
+
+      &.accept {
+        background: $bg-bubble-other;
+        color: $text-bubble;
+      }
+
+      &.decline {
+        background: $primary-dark;
+        color: $text-light;
+      }
+    }
+  }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}

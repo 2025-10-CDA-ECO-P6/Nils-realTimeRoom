@@ -1,6 +1,5 @@
-// components/MorpionBoard.jsx
 import React from 'react';
-import {getSocketId} from "../services/socketClient";
+import {getSocketId} from "../../services/socketClient";
 
 function MorpionBoard({ board, onMove, winner, state, currentPlayer, cols }) {
     if (!board) return null;

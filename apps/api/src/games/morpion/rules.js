@@ -5,12 +5,6 @@ export const winningCombinaisons = [
     [0, 4, 8], [2, 4, 6]              // Diagonales
 ];
 
-export const PLAYER_1_ICON = "x";
-export const PLAYER_2_ICON = "o";
-export const icons = {
-    1: 'X',
-    2: 'O'
-}
 export const states = {
     PLAYING: 0,
     WIN: 1,

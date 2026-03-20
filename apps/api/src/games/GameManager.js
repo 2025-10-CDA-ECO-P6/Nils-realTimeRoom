@@ -5,11 +5,16 @@ export default class GameManager {
        this.games = new Map();
    }
 
-   launchGame(gameId, type) {
+   launchGame(gameId, type, player1SocketId, player2SocketId, gameOptions = {}) {
        let game;
-       if (type === 'morpion') {
-           game =  new Morpion(gameId);
+       if (type === 'morpion' || type === 'morpion-rev' || type === 'morpion-nosense') {
+           const rows = gameOptions.rows ?? 3;
+           const cols = gameOptions.cols ?? 3
+           const winLength = gameOptions.winLength ?? 3;
+           game =  new Morpion(gameId, rows, cols, winLength);
        }
+       game.player1.socketId = player1SocketId;
+       game.player2.socketId = player2SocketId;
        this.games.set(gameId, game);
        return game;
    }

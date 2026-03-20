@@ -76,8 +76,8 @@ export const setupSocketHandlers = (io, gameManager) => {
                 return;
             }
             const matchId = `match_${senderSocketId}_${socket.id}`;
-            const gameToLaunch = gameManager.launchGame(matchId, 'morpion', senderSocketId,socket.id, game ); // a dynamiser aprew
-
+            const gameToLaunch = gameManager.launchGame(matchId, game.id, senderSocketId,socket.id, game ); // a dynamiser aprew
+            console.log("gameToLaunch:", gameToLaunch?.toJson());
             const challengerSocket = io.sockets.sockets.get(senderSocketId);
             if (challengerSocket) {
                 challengerSocket.join(matchId);

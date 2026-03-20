@@ -16,7 +16,8 @@ export default class GameManager {
            game.type = type;
        } else if (type === 'puissance4') {
            game = new Puissance4(gameId);
-           game.type = 'puissance4';
+           console.log("puissance4 créé:", game);
+           game.type = type;
        }
        game.player1.socketId = player1SocketId;
        game.player2.socketId = player2SocketId;

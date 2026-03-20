@@ -43,6 +43,10 @@ export default class BoardGame {
         this.winner = winner;
     }
 
+    playMove(index) {
+        throw Error('doit etee implementé');
+    }
+
     checkWin(player) {
        const moves = new Set(player.moves);
        const direction = [

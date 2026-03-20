@@ -1,14 +1,14 @@
 const store = {
 	rooms: {
-		"Fun": {
+		"fun": {
 			description: "Le salon de tout le monde",
 			messages: []
 		},
-		"Dev": {
+		"dev": {
 			description: "Ici ça code",
 			messages: []
 		},
-		"Gaming": {
+		"gaming": {
 			description: "Que des top 1",
 			messages: []
 		}

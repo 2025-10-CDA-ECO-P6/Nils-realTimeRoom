@@ -1,28 +1,34 @@
 import store from "../../store.js";
 
 export const chatService = {
-    addUser: (pseudo, room) => {
-        store.users.set(pseudo, room);
+    addUser: (socketId, pseudo, room) => {
+        store.users.set(socketId, {pseudo, room});
     },
 
-    removeUser: (pseudo) => {
-        store.users.delete(pseudo);
+    removeUser: (socketId) => {
+        store.users.delete(socketId);
     },
 
     getUsersByRoom: (room) => {
-        return Array.from(store.users.entries())
-            .filter(([_, r]) => r === room)
-            .map(([pseudo]) => pseudo);
+        const result = Array.from(store.users.entries())
+            .filter(([_, data]) => data.room.toLowerCase() === room.toLowerCase())
+            .map(([socketId, data]) => ({
+                pseudo: data.pseudo,
+                socketId: socketId
+            }));
+        console.log("getUsersByRoom appelé avec:", room, "→ résultat:", JSON.stringify(result));
+        return result;
     },
-
     addMessage: (room, message) => {
-        if (store.rooms[room]) {
-            store.rooms[room].messages.push(message);
+        const roomKey = Object.keys(store.rooms).find(k => k.toLowerCase() === room.toLowerCase());
+        if (roomKey) {
+            store.rooms[roomKey].messages.push(message);
         }
     },
 
     getMessages: (room) => {
-        return store.rooms[room]?.messages ?? [];
+        const roomKey = Object.keys(store.rooms).find(k => k.toLowerCase() === room.toLowerCase());
+        return store.rooms[roomKey]?.messages ?? [];
     },
 
     getRooms: () => {
@@ -32,5 +38,7 @@ export const chatService = {
         }));
     },
 
-    isPseudoDispo: (pseudo) => !store.users.has(pseudo)
+    isPseudoDispo: (pseudo) => {
+        return !Array.from(store.users.values()).some(u => u.pseudo === pseudo);
+    }
 };

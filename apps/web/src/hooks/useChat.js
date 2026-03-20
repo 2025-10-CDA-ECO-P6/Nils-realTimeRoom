@@ -1,6 +1,7 @@
 import {useQuery, useQueryClient} from "@tanstack/react-query";
 import {useEffect} from "react";
 import {offMessage, offRoomUsers, onHistory, onMessage, onRoomInfo, onRoomUsers} from "../services/socketClient";
+import {useChatStore} from "../store/chatStore";
 
 export const useChat = (room) => {
     const { messages, connectedUsers, roomInfo, setMessages, addMessage, setConnectedUsers, setRoomInfo } = useChatStore();

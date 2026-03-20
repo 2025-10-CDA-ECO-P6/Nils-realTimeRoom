@@ -1,5 +1,6 @@
 import React from 'react'
 import MorpionBoard from "./MorpionBoard";
+import Puissance4 from "./Puissance4";
 
 function GameBoard({currentGame, onMove}) {
     if (!currentGame) return null;
@@ -18,6 +19,14 @@ function GameBoard({currentGame, onMove}) {
                 />
             );
 
+        case 'puissance4':
+            return <Puissance4
+                board={currentGame.board}
+                onMove={onMove}
+                winner={currentGame.winner}
+                state={currentGame.state}
+                currentPlayer={currentGame.currentPlayer}
+            />
         // ici on peux ajouter des nouveaux jeux et le composant a instancié
         default:
             return null

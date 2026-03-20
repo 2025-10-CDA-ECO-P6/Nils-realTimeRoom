@@ -1,28 +1,24 @@
 import React from 'react'
-import {useEffect, useState, useRef} from "react";
+import {useEffect, useState} from "react";
 import {CodeIcon, GamepadIcon, PartyPopper, SendIcon, User, Users2} from 'lucide-react';
-import {useNavigate, useParams} from 'react-router-dom';
-import {getSocket, joinRoom, leaveRoom, offChallengeEvents, onReceiveChallenge, playMove, respondToChallenge, sendChallenge, sendMessage} from "../services/socketClient";
+import {useParams} from 'react-router-dom';
+import {joinRoom,  playMove,} from "../services/socketClient";
 import {useGame} from "../hooks/useGame";
-import MorpionBoard from "./MorpionBoard";
-import GameInvitation from "./GameInvitation";
+import MorpionBoard from "./game/MorpionBoard";
+import GameInvitation from "./game/GameInvitation";
 import {useChat} from "../hooks/useChat";
-import GamePicker from "./GamePicker";
+import GamePicker from "./game/GamePicker";
 import {useChallenge} from "../hooks/useChallenge";
 import {useRoomNav} from "../hooks/useRoomNav";
+import MessagesList from "./Messages/MessagesList";
+import MessageInput from "./Messages/MessageInput";
+import RoomHeader from "./Messages/RoomHeader";
 
 
 function ChatPage() {
     const {room} = useParams();
-    const [input, setInput] = useState('');
-
-    const messagesEndRef = useRef(null);
     const pseudo = sessionStorage.getItem('pseudo');
-    const availablesRooms = [
-        {name: 'Fun', icon: <PartyPopper/>},
-        {name: 'Gaming', icon: <GamepadIcon/>},
-        {name: 'Dev', icon: <CodeIcon/>}
-    ];
+
 
     const {currentGame} = useGame(room);
     const { messages, connectedUsers, roomInfo } = useChat(room);
@@ -34,28 +30,12 @@ function ChatPage() {
         joinRoom(pseudo, null, room)
     }, [room]);
 
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
-    }, [messages]);
 
 
     const handleCellClick = (index) => {
         if (currentGame?.matchId) playMove(currentGame.matchId, index);
 
     }
-
-
-    const handleSend = () => {
-        if (!input.trim()) return;
-        sendMessage(input.trim());
-        setInput('');
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') handleSend();
-    };
-
-
 
     return (
         <div className="chat-page-container">
@@ -71,45 +51,9 @@ function ChatPage() {
             />
 
             <div className="messages-container">
-                <div className="header">
-                    <div className="greet-message">
-                        {roomInfo.description}
-                    </div>
-                    <div className="roomList-container">
-                        {availablesRooms.map((r) => (
-                            <div key={r.name} className="room-item" onClick={()=> handleChangeRoom(r.name)}>
-                                {r.icon}
-                                <span>{r.name.toUpperCase()}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="messages-content-container">
-                    {messages.map((msg, index) => (
-                        <div key={index} className={`bubble ${msg.user === pseudo ? 'me' : msg.user === 'System' ? 'system' : 'other'}`}>
-                            {msg.user !== pseudo && msg.user !== 'System' && (
-                                <span className="bubble-author">{msg.user.trim().charAt(0).toUpperCase()} : </span>
-                            )}
-                            <span className="bubble-text">{msg.text}</span>
-                        </div>
-                    ))}
-                    <div ref={messagesEndRef}/>
-                </div>
-
-                <div className="messages-input-container">
-                    <input
-                        className="message-input"
-                        placeholder="Saisissez votre message ..."
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                    />
-                    <button onClick={handleSend}>
-                        <SendIcon size={18}/>
-                    </button>
-                </div>
+                <RoomHeader roomInfo={roomInfo} onChangeRoom={handleChangeRoom}/>
+                <MessagesList messages={messages} pseudo={pseudo}/>
+                <MessageInput/>
             </div>
 
             <div className="room-informations">

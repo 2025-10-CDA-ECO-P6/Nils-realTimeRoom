@@ -1,0 +1,46 @@
+@use "../variable" as *;
+@use "../mixins";
+
+.p4-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols, 7), 1fr);
+  gap: 6px;
+  width: 100%;
+
+  .p4-col-btn {
+    background: none;
+    border: none;
+    color: $primary;
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 4px;
+    transition: color 0.15s;
+
+    &:hover:not(:disabled) {
+      color: $text-light;
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+  }
+
+  .p4-cell {
+    aspect-ratio: 1;
+    background: $bg-input;
+    border: 2px solid $border;
+    border-radius: 50%;
+    transition: background 0.2s;
+
+    &--x {
+      background: $primary;
+      border-color: $primary;
+    }
+
+    &--o {
+      background: $bg-bubble-other;
+      border-color: $bg-bubble-other;
+    }
+  }
+}

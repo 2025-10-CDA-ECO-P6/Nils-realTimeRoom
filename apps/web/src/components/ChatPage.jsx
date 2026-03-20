@@ -2,53 +2,36 @@ import React from 'react'
 import {useEffect, useState, useRef} from "react";
 import {CodeIcon, GamepadIcon, PartyPopper, SendIcon, User, Users2} from 'lucide-react';
 import {useNavigate, useParams} from 'react-router-dom';
-import {
-    getSocket,
-    joinRoom,
-    leaveRoom, offChallengeEvents,
-     onReceiveChallenge,
-   playMove, respondToChallenge, sendChallenge,
-    sendMessage
-} from "../services/socketClient";
+import {getSocket, joinRoom, leaveRoom, offChallengeEvents, onReceiveChallenge, playMove, respondToChallenge, sendChallenge, sendMessage} from "../services/socketClient";
 import {useGame} from "../hooks/useGame";
 import MorpionBoard from "./MorpionBoard";
 import GameInvitation from "./GameInvitation";
 import {useChat} from "../hooks/useChat";
 import GamePicker from "./GamePicker";
-function ChatPage() {
+import {useChallenge} from "../hooks/useChallenge";
+import {useRoomNav} from "../hooks/useRoomNav";
 
+
+function ChatPage() {
     const {room} = useParams();
     const [input, setInput] = useState('');
-    const [pickerTarget, setPickerTarget] = useState(null);
+
     const messagesEndRef = useRef(null);
     const pseudo = sessionStorage.getItem('pseudo');
-    const navigate = useNavigate();
     const availablesRooms = [
         {name: 'Fun', icon: <PartyPopper/>},
         {name: 'Gaming', icon: <GamepadIcon/>},
         {name: 'Dev', icon: <CodeIcon/>}
     ];
-    const [incomingChallenge, setIncomingChallenge] = useState(null);
-   const {currentGame} = useGame(room);
+
+    const {currentGame} = useGame(room);
     const { messages, connectedUsers, roomInfo } = useChat(room);
+    const { incomingChallenge, pickerTarget, setPickerTarget, handleAccept, handleDecline, handleSelectGame } = useChallenge();
+    const {handleChangeRoom} = useRoomNav(room, pseudo);
+
+
     useEffect(() => {
         joinRoom(pseudo, null, room)
-        const socket = getSocket();
-        const registerChallenge = () => {
-            onReceiveChallenge((data) => {
-                setIncomingChallenge(data);
-            });
-        };
-
-        if (socket.connected) {
-            registerChallenge();
-        } else {
-            socket.once('connect', registerChallenge);
-        }
-
-        return () => {
-            offChallengeEvents();
-        };
     }, [room]);
 
     useEffect(() => {
@@ -57,26 +40,11 @@ function ChatPage() {
 
 
     const handleCellClick = (index) => {
-        if (currentGame?.matchId) {
-            playMove(currentGame.matchId, index);
-        }
+        if (currentGame?.matchId) playMove(currentGame.matchId, index);
+
     }
 
-    const handleAccept = () => {
-        respondToChallenge(incomingChallenge.fromSocketId, true, incomingChallenge.game);
-        setIncomingChallenge(null);
-    }
-    const handleDecline = () => {
-        respondToChallenge(incomingChallenge.fromSocketId, false);
-        setIncomingChallenge(null);
-    }
 
-    const handleChangeRoom = (roomName) => {
-        if (roomName.toLowerCase() === room)return;
-        leaveRoom(room);
-        joinRoom(pseudo, null, roomName.toLowerCase());
-        navigate(`/chat/${roomName.toLowerCase()}`);
-    }
     const handleSend = () => {
         if (!input.trim()) return;
         sendMessage(input.trim());
@@ -87,10 +55,7 @@ function ChatPage() {
         if (e.key === 'Enter') handleSend();
     };
 
-    const handleSelectGame = (target, game) => {
-        setPickerTarget(null);
-        sendChallenge(target.socketId, game);
-    };
+
 
     return (
         <div className="chat-page-container">

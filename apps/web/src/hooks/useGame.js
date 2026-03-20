@@ -2,34 +2,26 @@
 import {useQuery, useQueryClient} from "@tanstack/react-query";
 import {useEffect} from "react";
 import {offGameEvents, onGameReady, onGameUpdate} from "../services/socketClient";
+import {useGameStore} from "../store/gameStore";
 
 export const useGame = (room) => {
-    const queryClient = useQueryClient();
+    const { games, setGame, updateGame, clearGame } = useGameStore();
 
-    const {data : currentGame} = useQuery({
-        queryKey : ['currentGame', room],
-        queryFn: () => null,
-        initialData : null
-    })
-
-    useEffect(()=> {
+    useEffect(() => {
         onGameReady((gameData) => {
-            queryClient.setQueryData(['currentGame', room], gameData)
+            setGame(room, gameData);
         });
 
         onGameUpdate((updatedData) => {
-            queryClient.setQueryData(['currentGame', room], (old) => {
-                const newGame = old ? {...old, ...updatedData} : updatedData;
-                if (newGame.state === 1 || newGame.state === 2) {
-                    setTimeout(() => {
-                        queryClient.setQueryData(['currentGame', room], null);
-                    }, 3000);
-                }
-                return newGame;
-            });
+            updateGame(room, updatedData);
+
+            const updated = { ...games[room], ...updatedData };
+            if (updated.state === 1 || updated.state === 2) {
+                setTimeout(() => clearGame(room), 3000);
+            }
         });
 
         return () => offGameEvents();
-    }, [room, queryClient]);
-    return {currentGame};
+    }, [room]);
+    return { currentGame: games[room] ?? null };
 }

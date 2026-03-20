@@ -67,7 +67,7 @@ function LoginPage() {
 
                         <select name="roomChoice" id="" value={user.roomChoice} onChange={handleChange}>
                             <option disabled  value="">Selectionnez une room</option>
-                            <option  value="hub">Hub</option>
+                            <option  value="fun">Hub</option>
                             <option  value="dev">Dev</option>
                             <option  value="gaming">Gaming</option>
                         </select>

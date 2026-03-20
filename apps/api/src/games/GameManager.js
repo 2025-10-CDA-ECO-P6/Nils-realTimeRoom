@@ -12,6 +12,7 @@ export default class GameManager {
            const cols = gameOptions.cols ?? 3
            const winLength = gameOptions.winLength ?? 3;
            game =  new Morpion(gameId, rows, cols, winLength);
+           game.type = type;
        }
        game.player1.socketId = player1SocketId;
        game.player2.socketId = player2SocketId;

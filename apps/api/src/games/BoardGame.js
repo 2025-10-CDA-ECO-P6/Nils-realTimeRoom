@@ -2,6 +2,7 @@ import {states} from "./morpion/rules.js";
 
 export default class BoardGame {
     constructor(id, rows, cols, winLength) {
+        this.type = ''
         this.id = id;
         this.rows = rows;
         this.cols = cols;
@@ -97,7 +98,8 @@ export default class BoardGame {
             state: this.state,
             currentPlayer: this.currentPlayer,
             winner: this.winner,
-            cols: this.cols
+            cols: this.cols,
+            type : this.type
         };
     }
 }

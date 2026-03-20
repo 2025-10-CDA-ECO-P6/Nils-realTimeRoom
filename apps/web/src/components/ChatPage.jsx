@@ -13,24 +13,23 @@ import {useRoomNav} from "../hooks/useRoomNav";
 import MessagesList from "./Messages/MessagesList";
 import MessageInput from "./Messages/MessageInput";
 import RoomHeader from "./Messages/RoomHeader";
+import UserList from "./Users/UserList";
+import UserCount from "./Users/UserCount";
+import GameBoard from "./game/GameBoard";
 
 
 function ChatPage() {
     const {room} = useParams();
     const pseudo = sessionStorage.getItem('pseudo');
 
-
     const {currentGame} = useGame(room);
     const { messages, connectedUsers, roomInfo } = useChat(room);
     const { incomingChallenge, pickerTarget, setPickerTarget, handleAccept, handleDecline, handleSelectGame } = useChallenge();
     const {handleChangeRoom} = useRoomNav(room, pseudo);
 
-
     useEffect(() => {
         joinRoom(pseudo, null, room)
     }, [room]);
-
-
 
     const handleCellClick = (index) => {
         if (currentGame?.matchId) playMove(currentGame.matchId, index);
@@ -57,41 +56,12 @@ function ChatPage() {
             </div>
 
             <div className="room-informations">
-
-                <div className="count">
-                    <div className='count-left²'>
-                        <Users2/>
-                    </div>
-                    <div className='count-right'>
-                        <span>Salon : {room.toUpperCase()}</span>
-                        <span>{connectedUsers.length} en ligne</span>
-                    </div>
-                </div>
+                <UserCount connectedUsers={connectedUsers} room={room}/>
                <div className="right-panel-container">
-                   <div className="connected-user-list">
-                       {connectedUsers.map((user, index) => (
-                           <div className="user-container" key={index}>
-                               <User size={24}/>
-                               <span>{user.pseudo}</span>
-                               {user.pseudo !== pseudo && (
-                                   <button onClick={() => setPickerTarget(user)}>
-                                       <GamepadIcon size={16}/>
-                                   </button>
-                               )}
-                           </div>
-                       ))}
-                   </div>
+                  <UserList connectedUsers={connectedUsers} pseudo={pseudo} onChallenge={setPickerTarget} />
                    <div className="activity-container">
                        {currentGame && (
-                               <MorpionBoard
-                                   board={currentGame.board}
-                                   onMove={handleCellClick}
-                                   winner={currentGame.winner}
-                                   state={currentGame.state}
-                                   currentPlayer={currentGame.currentPlayer}
-                                   cols={currentGame.cols}
-                               />
-
+                               <GameBoard currentGame={currentGame} onMove={handleCellClick}/>
                        )}
                    </div>
                </div>

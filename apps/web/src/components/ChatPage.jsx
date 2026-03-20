@@ -3,22 +3,23 @@ import {useEffect, useState, useRef} from "react";
 import {CodeIcon, GamepadIcon, PartyPopper, SendIcon, User, Users2} from 'lucide-react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {
+    getSocket,
     joinRoom,
-    leaveRoom,
-    offMessage,
-    offRoomUsers,
-    onHistory,
-    onMessage, onRoomInfo,
-    onRoomUsers,
+    leaveRoom, offChallengeEvents,
+     onReceiveChallenge,
+   playMove, respondToChallenge, sendChallenge,
     sendMessage
 } from "../services/socketClient";
+import {useGame} from "../hooks/useGame";
+import MorpionBoard from "./MorpionBoard";
+import GameInvitation from "./GameInvitation";
+import {useChat} from "../hooks/useChat";
+import GamePicker from "./GamePicker";
 function ChatPage() {
 
     const {room} = useParams();
-    const [messages, setMessages] = useState([]);
-    const [connectedUsers, setConnectedUsers] = useState([]);
-    const [roomInfo, setRoomInfo] = useState('');
     const [input, setInput] = useState('');
+    const [pickerTarget, setPickerTarget] = useState(null);
     const messagesEndRef = useRef(null);
     const pseudo = sessionStorage.getItem('pseudo');
     const navigate = useNavigate();
@@ -27,29 +28,48 @@ function ChatPage() {
         {name: 'Gaming', icon: <GamepadIcon/>},
         {name: 'Dev', icon: <CodeIcon/>}
     ];
-
-
-
+    const [incomingChallenge, setIncomingChallenge] = useState(null);
+   const {currentGame} = useGame(room);
+    const { messages, connectedUsers, roomInfo } = useChat(room);
     useEffect(() => {
-        onRoomInfo((info) => {
-            console.log("room_info reçu:", info);
-            setRoomInfo(info);
-        });
-
-        onHistory((history) => {setMessages(history);});
-        onMessage((msg) => {setMessages(prev => [...prev, msg]);});
-        onRoomUsers((users) => {setConnectedUsers(users);});
         joinRoom(pseudo, null, room)
+        const socket = getSocket();
+        const registerChallenge = () => {
+            onReceiveChallenge((data) => {
+                setIncomingChallenge(data);
+            });
+        };
+
+        if (socket.connected) {
+            registerChallenge();
+        } else {
+            socket.once('connect', registerChallenge);
+        }
 
         return () => {
-            offMessage();
-            offRoomUsers();
+            offChallengeEvents();
         };
     }, [room]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
     }, [messages]);
+
+
+    const handleCellClick = (index) => {
+        if (currentGame?.matchId) {
+            playMove(currentGame.matchId, index);
+        }
+    }
+
+    const handleAccept = () => {
+        respondToChallenge(incomingChallenge.fromSocketId, true, incomingChallenge.game);
+        setIncomingChallenge(null);
+    }
+    const handleDecline = () => {
+        respondToChallenge(incomingChallenge.fromSocketId, false);
+        setIncomingChallenge(null);
+    }
 
     const handleChangeRoom = (roomName) => {
         if (roomName.toLowerCase() === room)return;
@@ -66,9 +86,25 @@ function ChatPage() {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') handleSend();
     };
-    console.log("pseudo session:", JSON.stringify(pseudo));
+
+    const handleSelectGame = (target, game) => {
+        setPickerTarget(null);
+        sendChallenge(target.socketId, game);
+    };
+
     return (
         <div className="chat-page-container">
+            <GameInvitation
+                challenge={incomingChallenge}
+                onAccept={handleAccept}
+                onDecline={handleDecline}
+            />
+            <GamePicker
+                target={pickerTarget}
+                onSelect={handleSelectGame}
+                onClose={() => setPickerTarget(null)}
+            />
+
             <div className="messages-container">
                 <div className="header">
                     <div className="greet-message">
@@ -112,6 +148,7 @@ function ChatPage() {
             </div>
 
             <div className="room-informations">
+
                 <div className="count">
                     <div className='count-left²'>
                         <Users2/>
@@ -121,14 +158,34 @@ function ChatPage() {
                         <span>{connectedUsers.length} en ligne</span>
                     </div>
                 </div>
-                <div className="connected-user-list">
-                    {connectedUsers.map((user, index) => (
-                        <div className="user-container" key={index}>
-                            <User size={24}/>
-                            <span>{user}</span>
-                        </div>
-                    ))}
-                </div>
+               <div className="right-panel-container">
+                   <div className="connected-user-list">
+                       {connectedUsers.map((user, index) => (
+                           <div className="user-container" key={index}>
+                               <User size={24}/>
+                               <span>{user.pseudo}</span>
+                               {user.pseudo !== pseudo && (
+                                   <button onClick={() => setPickerTarget(user)}>
+                                       <GamepadIcon size={16}/>
+                                   </button>
+                               )}
+                           </div>
+                       ))}
+                   </div>
+                   <div className="activity-container">
+                       {currentGame && (
+                               <MorpionBoard
+                                   board={currentGame.board}
+                                   onMove={handleCellClick}
+                                   winner={currentGame.winner}
+                                   state={currentGame.state}
+                                   currentPlayer={currentGame.currentPlayer}
+                                   cols={currentGame.cols}
+                               />
+
+                       )}
+                   </div>
+               </div>
             </div>
         </div>
     );

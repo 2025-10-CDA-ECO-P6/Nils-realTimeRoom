@@ -3,6 +3,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import userRouter from './src/routes/userRouter.js';
 import { setupSocketHandlers } from './src/socket/socketHandler.js';
+import GameManager from "./src/games/GameManager.js";
 
 
 const app = express();
@@ -20,8 +21,8 @@ const io = new Server(server, {
   },
   path: '/socket.io/'
 })
-
-setupSocketHandlers(io);
+const gameManager = new GameManager();
+setupSocketHandlers(io, gameManager);
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`app en ligne ${PORT}`);
 })

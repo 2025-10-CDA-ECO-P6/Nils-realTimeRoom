@@ -1,4 +1,5 @@
 import Morpion from "./morpion/game.js";
+import Puissance4 from "./puissance4/game.js";
 
 export default class GameManager {
    constructor() {
@@ -13,6 +14,9 @@ export default class GameManager {
            const winLength = gameOptions.winLength ?? 3;
            game =  new Morpion(gameId, rows, cols, winLength);
            game.type = type;
+       } else if (type === 'puissance4') {
+           game = new Puissance4(gameId);
+           game.type = 'puissance4';
        }
        game.player1.socketId = player1SocketId;
        game.player2.socketId = player2SocketId;
